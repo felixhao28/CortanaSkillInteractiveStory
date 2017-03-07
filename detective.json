@@ -1,0 +1,258 @@
+{
+	"Introduction": {
+		"title": "Report the case",
+		"speak": "You are a detective and are working with your cases. A lady hastily comes to your office, reporting that her company's accountant is killed in the financing office. To lift the veil of truth, you start to investigate the case. Would you like to go to the financing office with the lady to scout the crime scene?",
+		"display": "Would you like to go to the financing office with the lady to scout the crime scene?",
+		"choices": [
+			{
+				"text": "Yes",
+				"nextState": "SofiasOfficeInvestigation"
+			},
+			{
+				"text": "No",
+				"action": "end"
+			}
+		]
+	},
+	"SofiasOfficeInvestigation": {
+		"title": "Sofia's Office - Investigation",
+		"speak": "You are now in the financing office, seeing a dead woman lying flat on the ground. The body's lip reveals that Sophia is poisoned to death. There is a small brown bottle on the ground. The financing office is quite messy. It's obvious someone has been searching for something rudely. Based on your investigation, the reporter, Victoria, is the company manager with accepted competence. The victim, Sophia, is an senior accountant who is the contact point of company financial statement. To get more clues, what would you do next?",
+		"display": "To get more clues, what would you do next?",
+		"action": "=> if ($evidences == null) $evidences = [];",
+		"choices": [
+			{
+				"text": "Examine the component in the brown bottle and identify the finger print.",
+				"nextState": "SofiasOfficeInvestigation-Bottle",
+				"visible": "-> !$evidences.includes(\"bottle\")"
+			},
+			{
+				"text": "Check the security camera footage",
+				"nextState": "SofiasOfficeInvestigation-Camera",
+				"visible": "-> !$evidences.includes(\"camera\")"
+			},
+			{
+				"text": "Find out what is stolen",
+				"nextState": "SofiasOfficeInvestigation-Files",
+				"visible": "-> !$evidences.includes(\"files\")"
+			}
+		]
+	},
+	"SofiasOfficeInvestigation-Bottle": {
+		"title": "Sofia's Office - The Bottle",
+		"speak": "There are several poisonous drugs in the bottle which cause the death of victim. The finger print on the bottle pack belongs to a man called Lukas. Lukas is the chief manager in the company. It is highly possible that Lukas is the murder in this case.",
+		"display": "There are several poisonous drugs in the bottle which cause the death of victim. The finger print on the bottle pack belongs to a man called Lukas. Lukas is the chief manager in the company. It is highly possible that Lukas is the murder in this case.",
+		"action": "=> $evidences.push(\"bottle\");",
+		"choices": [
+			{
+				"text": "Investigate other evidences",
+				"nextState": "-> $evidences.length == 2 ? \"SofiasOfficeLukasLeaving\" : \"SofiasOfficeInvestigation\"",
+				"visible": "-> $evidences.length < 3"
+			},
+			{
+				"text": "Go to Lukas' office to get the missing files",
+				"visible": "-> $evidences.length == 3",
+				"nextState": "LukasOffice"
+			}
+		]
+	},
+	"SofiasOfficeInvestigation-Camera": {
+		"title": "Sofia's Office - The Security Camera",
+		"speak": "The camera footage shows that Lukas was the last person who had been to the victim's office before Sophia was killed. He walked out of Sophia's office, carrying a bunch of files.",
+		"display": "The camera footage shows that Lukas was the last person who had been to the victim's office before Sophia was killed. He walked out of Sophia's office, carrying a bunch of files.",
+		"action": "=> $evidences.push(\"camera\");",
+		"choices": [
+			{
+				"text": "Investigate other evidences",
+				"nextState": "-> $evidences.length == 2 ? \"SofiasOfficeLukasLeaving\" : \"SofiasOfficeInvestigation\""
+			},
+			{
+				"text": "Go to Lukas' office to get the missing files",
+				"visible": "-> $evidences.length == 3",
+				"nextState": "LukasOffice"
+			}
+		]
+	},
+	"SofiasOfficeInvestigation-Files": {
+		"title": "Sofia's Office - The Stolen Files",
+		"speak": "The Internal financial statements for the past few years are missing. And all the computer data is deleted as well. It seems that the financial statements are the target for the criminals.",
+		"display": "The Internal financial statements for the past few years are missing. And all the computer data is deleted as well. It seems that the financial statements are the target for the criminals.",
+		"action": "=> $evidences.push(\"files\");",
+		"choices": [
+			{
+				"text": "Investigate other evidences",
+				"nextState": "-> $evidences.length == 2 ? \"SofiasOfficeLukasLeaving\" : \"SofiasOfficeInvestigation\""
+			},
+			{
+				"text": "Go to Lukas' office to get the missing files",
+				"visible": "-> $evidences.length == 3",
+				"nextState": "LukasOffice"
+			}
+		]
+	},
+	"SofiasOfficeLukasLeaving": {
+		"title": "Sofia's Office - Lukas is Leaving",
+		"speak": "While you are finding more clues, you glance at the door. Lukas is walking through the corridor. It seems that he is in a hurry and ready to run. According to the clues, the entire suspicion fall upon Lukas. Now you can go and catch him so that you can get more information by interrogating him, or keep investigating the office.",
+		"display": "Now you can go and catch him so that you can get more information by interrogating him, or keep investigating the office.",
+		"choices": [
+			{
+				"text": "Go and catch Lukas",
+				"nextState": "-> $evidences.includes(\"files\") ? \"CaughtLukas1\" : \"CaughtLukas2\"",
+				"action": "=> $caughtLukas = true;"
+			},
+			{
+				"text": "Keep investigating the office and open the remaining sealed clue.",
+				"nextState": "SofiasOfficeInvestigation",
+				"action": "=> $caughtLukas = false;"
+			}
+		]
+	},
+	"CaughtLukas1": {
+		"title": "Police Station - Caught Lukas",
+		"speak": "You successfully caught Lukas, and arrest him in the temporary holding cell for question. Lukas feels apprehensive. Under your aggressive interrogation with the finger print on the bottle and the financial statement from office, he realizes his behavior has been exposed. He confesses everything so that he could asking for reducing the penalty. He narrates that he gave the poisonous drugs to Sophia and stole the financial statement in her office. Because the financial statement shows the evidence of his embezzlement. He want to change the data to cover up his crimes. Defalcated the public fund for gamble, he left with a huge debt. He borrowed a usury from underworld loan shark Don. He also mentions that it is Don who gave the poisonous drugs to him. Don instigated him to do everything in the whole murder case. Lukas says the missing financial statement are hide in his office. Now, you have got the testimony from Lukas, what would you do next?",
+		"display": "Now, you have got the testimony from Lukas, what would you do next?",
+		"choices": [
+			{
+				"text": "Convict Lukas",
+				"nextState": "EndingLukas1"
+			},
+			{
+				"text": "Go to Lukas' office to get the missing files",
+				"nextState": "LukasOffice"
+			},
+			{
+				"text": "Return to the scene for more clues",
+				"nextState": "SofiasOfficeInvestigation-CameraMissing",
+				"visible": "-> !$evidences.includes(\"camera\")"
+			},
+			{
+				"text": "Return to the scene for more clues",
+				"nextState": "SofiasOfficeInvestigation-BottleMissing",
+				"visible": "-> !$evidences.includes(\"bottle\")"
+			}
+		]
+	},
+	"LukasOffice": {
+		"title": "Lukas' Office",
+		"speak": "When you go to Lukas' office, you find the missing files. Those files indicate the illegal profit flows to a bank account under the name of Don.",
+		"display": "The illegal profit flows to a bank account under the name of Don.",
+		"choices": [
+			{
+				"text": "Go to Don's office",
+				"nextState": "DonsOffice"
+			},
+			{
+				"text": "Convict Lukas",
+				"nextState": "EndingLukas1"
+			}
+		]
+	},
+	"SofiasOfficeInvestigation-CameraMissing": {
+		"title": "Sofia's Office - The Security Camera",
+		"speak": "When you return to Sofia's office, unfortunately, you find all the security camera footages are all deleted. The camera footage clue is broken. However, you get the testimony from Lukas which corresponds to the same person mentioned in the missing file. You are preparing to go another suspect Don's office.",
+		"display": "You are preparing to go another suspect Don's office.",
+		"choices": [
+			{
+				"text": "Go to Don's office",
+				"nextState": "DonsOffice"
+			},
+			{
+				"text": "Convict Lukas",
+				"nextState": "EndingLukas1"
+			}
+		]
+	},
+	"SofiasOfficeInvestigation-BottleMissing": {
+		"title": "Sofia's Office - The Bottle",
+		"speak": "When you return to Sofia's office, unfortunately, you find the brown bottle are missing, and it's impossible to check the finger print on the bottle. The clue is broken. However, you get the testimony from Lukas which corresponds to the same person mentioned in the missing file. You are preparing to go another suspect Don's office.",
+		"display": "You are preparing to go another suspect Don's office.",
+		"choices": [
+			{
+				"text": "Go to Don's office",
+				"nextState": "DonsOffice"
+			},
+			{
+				"text": "Convict Lukas",
+				"nextState": "EndingLukas1"
+			}
+		]
+	},
+	"CaughtLukas2": {
+		"title": "Police Station - Caught Lukas",
+		"speak": "You successfully caught Lukas, and arrest him in the temporary holding cell for question. Lukas feels apprehensive. Under your aggressive interrogation with tentative strategy, he realizes his behavior has been exposed. He confesses that he gave the poisonous drugs to Sophia and stole the financial statement in her office. Because the financial statement shows the evidence of his embezzlement. He want to change the data to cover up his crimes. But Lukas refuses to hand over the financial statement. Now, you only get the testimony from Lukas, what would you do next?",
+		"display": "Now, you only get the testimony from Lukas, what would you do next?",
+		"choices": [
+			{
+				"text": "Convict Lukas",
+				"nextState": "EndingLukas1"
+			},
+			{
+				"text": "Return to the scene for more clues",
+				"nextState": "EndingLukas2"
+			}
+		]
+	},
+	"DonsOffice": {
+		"title": "Don's Office",
+		"speak": "B showed up at K's house. K said there must have been some misunderstanding since no harm has been done.",
+		"display": "B showed up at K's house. K said there must have been some misunderstanding since no harm has been done.",
+		"choices": [
+			{
+				"text": "Charge K with crime of murder",
+				"nextState": "EndingDon",
+				"visible": "-> $caughtLukas"
+			},
+			{
+				"text": "Sofia was killed",
+				"nextState": "DonsOfficeAskVictoria"
+			},
+			{
+				"text": "Victoria told detective that Sofia was killed",
+				"nextState": "EndingVictoria"
+			},
+			{
+				"text": "Don't tell Don about Sofia",
+				"nextState": "EndingBad"
+			}
+		]
+	},
+	"DonsOfficeAskVictoria": {
+		"title": "Don's Office - Talking with Don",
+		"speak": "Don asks if Victoria is involved",
+		"display": "Don asks if Victoria is involved",
+		"choices": [
+			{
+				"text": "Yes",
+				"nextState": "EndingVictoria"
+			},
+			{
+				"text": "No",
+				"nextState": "EndingBad"
+			}
+		]
+	},
+	"EndingBad": {
+		"title": "Bad Ending - No murder is caught",
+		"speak": "You ran out of clues.",
+		"display": "You ran out of clues."
+	},
+	"EndingLukas1": {
+		"title": "Ending - Convict Lukas",
+		"speak": "Lukas admits his guilty to police and the murder case is closed.",
+		"display": "Lukas admits his guilty to police and the murder case is closed."
+	},
+	"EndingLukas2": {
+		"title": "Ending - Convict Lukas",
+		"speak": "When you return to Sofia's office, you find all the files are missing and you cannot find out which file is stolen before. The clue for missing file is broken. However, you can close the case with Lukas's admission of guilty.",
+		"display": "Lukas admits his guilty to police and the murder case is closed."
+	},
+	"EndingDon": {
+		"title": "Good Ending - Convict Don",
+		"speak": "Lukas and Don are caught.",
+		"display": "Lukas and Don are caught."
+	},
+	"EndingVictoria": {
+		"title": "True Ending - Convict Victoria",
+		"speak": "Don reminds you to investigate Victoria. You checked security camera on Victoria, and she swapped the bottle in Lukas' Office secretly.",
+		"display": "Victoria swapped the bottle in Lukas' Office. She turned out to be the real killer."
+	}
+}
