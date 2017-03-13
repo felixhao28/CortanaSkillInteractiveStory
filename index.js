@@ -133,7 +133,7 @@ function getRepromptResponse(choices, data) {
 function getStoryResponse(state, data) {
   var title = state.title;
   var speak = state.speak;
-  var display = '_' + state.display + '_' + '\n';
+  var display = '__' + state.display + '__' + '\n';
   // filter choices by visible
   if (state.choices != null) {
     state.choices = state.choices.filter(choice => {
@@ -143,7 +143,7 @@ function getStoryResponse(state, data) {
       return true;
     })
     for (var choice of state.choices) {
-      display += '__' + choice.text + '__\n';
+      display += '_' + choice.text + '_\n';
     }
   }
   var shouldEndSession = state.choices == null || state.choices.length === 0;
@@ -175,7 +175,7 @@ function getStoryResponse(state, data) {
 
 // Export the function to handle the incoming request.
 module.exports = function(context, req) {
-  const story = context.bindings.detectiveStory;
+  const story = context.bindings.inputBlob;
   try {
     // The JSON request from Cortana is in req.Request
     //
@@ -209,7 +209,7 @@ module.exports = function(context, req) {
           for (var choice of state.choices) {
             var distance = levenshtein(choice.text.toLowerCase(), text);
             var score = choice.text.length - distance;
-            context.log(`Comparing choice: ${choice.text}, score=${score}`);
+            // context.log(`Comparing choice: ${choice.text}, score=${score}`);
             if (maxScore < score) {
               maxScore = score;
               bestChoice = choice;

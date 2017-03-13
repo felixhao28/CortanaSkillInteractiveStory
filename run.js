@@ -3,6 +3,8 @@ const f = require('./index');
 var YAML = require('yamljs');
 
 const detectiveStory = YAML.load('./detective.yml');
+var fs = require('fs');
+fs.writeFileSync('detective.json', JSON.stringify(detectiveStory, null, 2), 'utf-8');
 
 var req = {
   "session": {
@@ -52,7 +54,7 @@ function mainAction(command, callback) {
         callback();
     },
     bindings: {
-      detectiveStory: detectiveStory
+      inputBlob: detectiveStory
     }
   }
   if (command == 'start') {
